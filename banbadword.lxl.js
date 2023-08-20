@@ -1,20 +1,17 @@
-/// LiteLoader-AIDS automatic generated
-/// <reference path="c:\Users\姚昕祺\Desktop\js开发/dts/helperlib/src/index.d.ts"/> 
-
 ll.registerPlugin(
     /* name */ "banbadwords",
     /* introduction */ "屏蔽聊天中的违禁词",
-    /* version */ [0,0,1],
+    /* version */ [0,0,2],
     /* otherInformation */ {}
 ); 
 
 // 首次运行处理
-if (!file.exists('./plugins/banbadwords/')) {
-    log('[加强聊天栏]首次运行，创建文件夹');
-    file.mkdir('./plugins/banbadwords/');
-  }
-// 创建数据文件
-if (!file.exists('./plugins/banbadwrods/wordData.json')) {
+if (File.exists('./plugins/banbadwords/')) {
+  log('[违禁词屏蔽]检测到插件文件夹');
+  var wordData = data.parseJson(File.readFrom('./plugins/banbadwords/wordData.json'));
+}else{
+    log('[违禁词屏蔽]未检测到插件文件夹，创建创建文件夹');
+    File.mkdir('./plugins/banbadwords/');
     log('[违禁词屏蔽]首次运行，创建默认配置文件');
     var wordData = [
       '爱液',
@@ -322,10 +319,8 @@ if (!file.exists('./plugins/banbadwrods/wordData.json')) {
       '失身粉',
       '淫荡自慰器',
     ];
-    file.writeTo('./plugins/banbadwords/wordData.json', data.toJson(wordData, 4));
-  } else {
-    var wordData = data.parseJson(File.readFrom('./plugins/banbadwords/wordData.json'));
-  }
+    File.writeTo('./plugins/banbadwords/wordData.json', data.toJson(wordData, 4));
+}
 mc.listen('onChat', (player, msg) => {
 //处理敏感词
     let msgOut = msg;
@@ -334,6 +329,7 @@ mc.listen('onChat', (player, msg) => {
       if (msgOut.indexOf(element) !== -1) {
         msgOut = '****';
         player.tell('[敏感词屏蔽]您发送的对话含有敏感词：§e' + element);
+        log(player.name +'说了含有'+ element + '的话')
         return false
       }
     }
