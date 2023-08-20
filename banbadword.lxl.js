@@ -327,9 +327,11 @@ mc.listen('onChat', (player, msg) => {
     for (let index = 0; index < wordData.length; index++) {
       const element = wordData[index];
       if (msgOut.indexOf(element) !== -1) {
-        msgOut = '****';
-        player.tell('[敏感词屏蔽]您发送的对话含有敏感词：§e' + element);
-        log(player.name +'说了含有'+ element + '的话')
+        player.tell(`[敏感词屏蔽]您发送的对话含有敏感词:${Format.Yellow}${element}`);
+        logger.info(`${player.realName}说了含有${element}的话`)
+        mc.getOnlinePlayers().forEach(p => {
+          p.tell(`<${player.realName}> ****`);
+        });
         return false
       }
     }
